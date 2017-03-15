@@ -1,0 +1,32 @@
+{
+  "name": "set",
+  "version": "0.1.0",
+  "description": "Set game server",
+  "author": "Paul Robertson <paul.robertson@soft-machine.co.uk>",
+  "license": "MIT",
+  "dependencies": {
+    "angular-ui-bootstrap": "^2.5.0",
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-ng-annotate": "^2.0.0",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-uglify": "^2.0.1",
+    "jwt-simple": "^0.5.1",
+    "lodash.shuffle": "^4.2.0",
+    "morgan": "^1.8.1"
+  },
+  "devDependencies": {
+    "blanket": "^1.2.3",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "mocha": "^3.2.0",
+    "protractor": "^5.1.1",
+    "supertest": "^3.0.0"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha -R nyan",
+    "test-cov": "istanbul cover ./node_modules/.bin/_mocha"
+  }
+}
