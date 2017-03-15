@@ -20,6 +20,7 @@ router.use('/client', require('./client'))
 router.use('/api/cards', require('./api/cards'))
 
 /*
+  TODO: test this!
   catch errors here
 */
 router.use(function (err, req, res, next) {
