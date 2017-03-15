@@ -4,7 +4,13 @@ var Cards = function() {
     for (var color = 0; color < 3; color++)
       for (var number = 0; number < 3; number++)
         for (var fill = 0; fill < 3; fill++)
-          arr.push( {shape: shape, color: color, number: number, fill: fill})
+          arr.push({
+            shape: shape,
+            color: color,
+            number: number,
+            fill: fill,
+            image: '/'+shape+'_'+color+'_'+number+'_'+fill+'.png'
+          })
   this.cards = arr
 }
 module.exports = Cards

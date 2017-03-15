@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-ui-layout/src/ui-layout.css"/>
+    <link rel="stylesheet" href="/app.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-route.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-sanitize.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-touch.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.js"></script>
+    <script src='/ui-bootstrap-tpls.js'></script>
+    <script src='/app.js'></script>
+  </head>
+  <body ng-app="app" ng-controller='CardsCtrl'>
+    <ul class='list-group'>
+      <li class='list-group-item'>
+        <div ng-repeat='card in cards1' style='display: inline;'>
+          <img ng-src="{{card.image}}" width="75" height="125" class='card'>
+        </div>
+      </li>
+      <li class='list-group-item'>
+        <div ng-repeat='card in cards2' style='display: inline;'>
+          <img ng-src="{{card.image}}" width="75" height="125" class='card'>
+        </div>
+      </li>
+      <li class='list-group-item'>
+        <div ng-repeat='card in cards3' style='display: inline;'>
+          <img ng-src="{{card.image}}" width="75" height="125" class='card'>
+        </div>
+      </li>
+    </ul>
+  </body>
+</html>
