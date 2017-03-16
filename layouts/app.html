@@ -16,20 +16,21 @@
   <body ng-app="app" ng-controller='CardsCtrl'>
     <ul class='list-group'>
       <li class='list-group-item' style="border: none;">
-        <div ng-repeat='card in cards1' style='display: inline;'>
+        <div ng-repeat='card in cards[0]' style='display: inline;'>
           <img ng-src="{{card.image}}" width="75" height="125" class='card' ng-class="{'selected': card.selected}" ng-click="click(0, $index)">
         </div>
       </li>
       <li class='list-group-item' style="border: none;">
-        <div ng-repeat='card in cards2' style='display: inline;'>
+        <div ng-repeat='card in cards[1]' style='display: inline;'>
           <img ng-src="{{card.image}}" width="75" height="125" class='card' ng-class="{'selected': card.selected}" ng-click="click(1, $index)">
         </div>
       </li>
       <li class='list-group-item' style="border: none;">
-        <div ng-repeat='card in cards3' style='display: inline;'>
+        <div ng-repeat='card in cards[2]' style='display: inline;'>
           <img ng-src="{{card.image}}" width="75" height="125" class='card' ng-class="{'selected': card.selected}" ng-click="click(2, $index)">
         </div>
       </li>
     </ul>
+    <h3>Score: {{score}}</h3>
   </body>
 </html>
