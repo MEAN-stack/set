@@ -3,8 +3,8 @@
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
   border-radius: 8px;
-  -webkit-box-shadow: 0 6px 6px 0 #C2C2C2;
-  box-shadow: 0 6px 6px 0 #C2C2C2;
+  -webkit-box-shadow: 4px 4px 4px 0 #C2C2C2;
+  box-shadow: 4px 4px 4px 0 #C2C2C2;
   margin: 6px;
 }
 
