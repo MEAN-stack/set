@@ -52,6 +52,22 @@ angular.module('app')
     }
   }
 
+  $scope.newGame = function() {
+    $scope.deck = []
+    $scope.cards = []
+    $scope.score = 0
+    $scope.set = []
+ 
+    CardsSvc.fetch().success(function(deck){
+      // fetch the whole deck
+      $scope.deck = deck
+      // deal three rows of four cards
+      $scope.cards.push(deck.splice(0,4))
+      $scope.cards.push(deck.splice(0,4))
+      $scope.cards.push(deck.splice(0,4))
+    })
+  }
+
   var checkSet = function() {
     var shape = 0
     var number = 0
