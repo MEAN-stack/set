@@ -32,5 +32,9 @@
       </li>
     </ul>
     <h3>Score: {{score}}</h3>
+    <div class="container">
+      <button type="button" class="btn btn-sm btn-success" ng-click="deal()" ng-disabled="deck.length < 3">Deal</button>
+      <button type="button" class="btn btn-sm btn-success" ng-click="newGame()">New Game</button>
+    </div>
   </body>
 </html>
