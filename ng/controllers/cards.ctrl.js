@@ -36,19 +36,9 @@ angular.module('app')
 
   $scope.deal = function() {
     if ($scope.deck.length >= 3) {
-//      if (($scope.cards[0].length >=4 ) && ($scope.cards[1].length >= 4) && ($scope.cards[2].length >= 4)) {
-        // deal one card in each row
-        $scope.cards[0].push($scope.deck.splice(0,1)[0])
-        $scope.cards[1].push($scope.deck.splice(0,1)[0])
-        $scope.cards[2].push($scope.deck.splice(0,1)[0])
-//      }
-//      else {
-//        for (var row=0; row<3; row++) {
-//          while ($scope.cards[row].length < 4) {
-//            $scope.cards[row].push($scope.deck.splice(0,1)[0])
-//          }
-//        }
-//      }
+      $scope.cards[0].push($scope.deck.splice(0,1)[0])
+      $scope.cards[1].push($scope.deck.splice(0,1)[0])
+      $scope.cards[2].push($scope.deck.splice(0,1)[0])
     }
   }
 
@@ -66,6 +56,95 @@ angular.module('app')
       $scope.cards.push(deck.splice(0,4))
       $scope.cards.push(deck.splice(0,4))
     })
+  }
+
+  $scope.hint = function() {
+    if (hint()) {
+      $timeout(function() {
+        clearSelections()
+      }, 1000)
+    }
+  }
+
+  var hint = function() {
+    var cards = []
+    var row, col
+    var i, j, k
+    var c1, c2
+    var c3 = {shape:0, number:0, fill:0, color:0}
+    var len
+
+    // get all the dealt cards into a single array
+    for (row=0; row<3; row++) {
+      for (col=0; col<$scope.cards[row].length; col++) {
+        cards.push($scope.cards[row][col])
+      }
+    }
+    len = cards.length
+
+    // for each possible pair...
+    // figure out what third card would make a set
+    // and check whether that card is in the array
+    for (i=0; i<len; i++) {
+      c1 = cards[i]
+      for (j=i+1; j<len; j++) {
+        c2 = cards[j]
+
+        c3.shape = 3 - (c1.shape+c2.shape)
+        if (c3.shape < 0) {
+          c3.shape = 2
+        }
+        else {
+          c3.shape %= 3
+        }
+        c3.color = 3 - (c1.color+c2.color)
+        if (c3.color < 0) {
+          c3.color = 2
+        }
+        else {
+          c3.color %= 3
+        }
+        c3.number = 3 - (c1.number+c2.number)
+        if (c3.number < 0) {
+          c3.number = 2
+        }
+        else {
+          c3.number %= 3
+        }
+        c3.fill = 3 - (c1.fill+c2.fill)
+        if (c3.fill < 0) {
+          c3.fill = 2
+        }
+        else {
+          c3.fill %= 3
+        }
+        for (k=0; k<len; k++) {
+          if (equals(c3, cards[k])) {
+            c1.selected = true
+            c2.selected = true
+            cards[k].selected = true
+            return true
+          }
+        }
+      }
+    }
+    return false
+  }
+
+  var equals = function(card1, card2) {
+    if (card1.shape !== card2.shape) {
+      return false
+    }
+    if (card1.number !== card2.number) {
+      return false
+    }
+    if (card1.color !== card2.color) {
+      return false
+    }
+    if (card1.fill !== card2.fill) {
+      return false
+    }
+    return true
   }
 
   var checkSet = function() {
@@ -119,18 +198,33 @@ angular.module('app')
 
   // remove the current set and deal three more cards
   var removeSet = function() {
-    // remove the set
-    for (var row=0; row<3; row++) {
-      for (var col=$scope.cards[row].length-1; col>=0; col--) {
-        var card = $scope.cards[row][col]
-        if ((card == $scope.set[0]) || (card == $scope.set[1]) || (card == $scope.set[2])) {
-          $scope.cards[row].splice(col, 1)
+    var row
+    var col
+    var card
+    var cardCount = $scope.cards[0].length + $scope.cards[1].length + $scope.cards[2].length
+
+    if ((cardCount > 12) || ($scope.deck.length < 3)) {
+      // if there are more than 12 cards, or if there are
+      // no more cards to deal then we can just remove the set
+      for (row=0; row<3; row++) {
+        for (col=$scope.cards[row].length-1; col>=0; col--) {
+          card = $scope.cards[row][col]
+          if ((card == $scope.set[0]) || (card == $scope.set[1]) || (card == $scope.set[2])) {
+            $scope.cards[row].splice(col, 1)
+          }
         }
       }
     }
-    var cardCount = $scope.cards[0].length + $scope.cards[1].length + $scope.cards[2].length
-    if (cardCount < 12) {
-      $scope.deal()
+    else {
+      // remove the set
+      for (row=0; row<3; row++) {
+        for (col=$scope.cards[row].length-1; col>=0; col--) {
+          card = $scope.cards[row][col]
+          if ((card == $scope.set[0]) || (card == $scope.set[1]) || (card == $scope.set[2])) {
+            $scope.cards[row][col] = $scope.deck.splice(0,1)[0]
+          }
+        }
+      }
     }
   }
 
