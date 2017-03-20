@@ -1,0 +1,23 @@
+    <ul class='list-group'>
+      <li class='list-group-item' style="border: none;">
+        <div ng-repeat='card in cards[0]' style='display: inline;'>
+          <img ng-src="{{card.image}}" width="75" height="125" class='card' ng-class="{'selected': card.selected}" ng-click="click(0, $index)">
+        </div>
+      </li>
+      <li class='list-group-item' style="border: none;">
+        <div ng-repeat='card in cards[1]' style='display: inline;'>
+          <img ng-src="{{card.image}}" width="75" height="125" class='card' ng-class="{'selected': card.selected}" ng-click="click(1, $index)">
+        </div>
+      </li>
+      <li class='list-group-item' style="border: none;">
+        <div ng-repeat='card in cards[2]' style='display: inline;'>
+          <img ng-src="{{card.image}}" width="75" height="125" class='card' ng-class="{'selected': card.selected}" ng-click="click(2, $index)">
+        </div>
+      </li>
+    </ul>
+    <h3>Score: {{score}}</h3>
+    <div class="container">
+      <button type="button" class="btn btn-sm btn-success" ng-click="deal()" ng-disabled="deck.length < 3">Deal</button>
+      <button type="button" class="btn btn-sm btn-success" ng-click="hint()">Hint</button>
+      <button type="button" class="btn btn-sm btn-success" ng-click="newGame()">New Game</button>
+    </div>
