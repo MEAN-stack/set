@@ -18,21 +18,13 @@
       <div class='container'>
         <ul class='nav navbar-nav'>
           <li><a class='practise' href="/#/practise">Practise</a></li>
+          <li><a class='games' href="/#/games">Games</a></li>
           <li><a class='newgame' href="/#/newgame">New Game</a></li>
           <li><a class='login' href="/#/login">Sign In</a></li>
         </ul>
-        <p ng-if="currentUser" class="navbar-text navbar-right">{{currentUser.username}}</p>
+        <p ng-if="username" class="navbar-text navbar-right">{{username}}</p>
       </div>
     </nav>
-<!--
-    <div class="container">
-      <h3>Your name:</h3><input type="text" ng-model="username">
-    </div>
-    <div class="container">
-      <button type="button" class="btn btn-sm btn-success" ng-click="newGame()" ng-disabled="username.length===0">New Game</button>
-      <button type="button" class="btn btn-sm btn-success" ng-click="practise()">Practise</button>
-    </div>
--->
     <div ng-view></div>
   </body>
 </html>
