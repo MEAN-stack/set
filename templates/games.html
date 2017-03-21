@@ -1,0 +1,18 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6">
+          <h2>Games</h2>
+          <uib-accordion close-others="true">
+            <div uib-accordion-group ng-repeat='game in games'>
+              <uib-accordion-heading><span>{{game.creator}}</span></uib-accordion-heading>
+              <ul class='list-group'>
+                <li ng-repeat='player in game.players' class='list-group-item'>
+                  <strong>{{player}}</strong>
+                </li>
+              </ul>
+              <button type="button" class="btn btn-sm btn-success" ng-click="join(game)">Join</button>
+            </div>
+          </uib-accordion>
+        </div>
+    </div>
+</div>
