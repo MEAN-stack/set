@@ -1,15 +1,19 @@
 angular.module('app')
-.controller('GamesCtrl', function($scope, $location) {
+.controller('GamesCtrl', function($scope, $location, GamesSvc) {
   var path = $location.path()
 
-  $scope.games = [
-    {creator: 'Paul', players: ['Paul', 'Santhosh', 'Manasa']},
-    {creator: 'David', players: ['David']},
-    {creator: 'Someone', players: []}
-  ]
-
   if (/newgame/.test(path)) {
-    console.log("new game")
+    GamesSvc.create().then(function(response) {
+      console.log("created a game")
+      GamesSvc.fetch().success(function(games){
+        $scope.games = games
+      })
+    })
+  }
+  else {
+    GamesSvc.fetch().success(function(games){
+      $scope.games = games
+    })
   }
 
   $scope.join = function(game) {

@@ -11,12 +11,9 @@ angular.module('app')
       username: username
     }).then(function(val) {
       svc.token = val.data
+      $http.defaults.headers.common['X-Auth'] = val.data
       return svc.getUser()
     })
   }
 
-  // register a new user
-//  svc.createUser = function(username, fullName, email, password) {
-//    return $http.post('/api/users', { username: username, fullName: fullName, email: email, password: password })
-//  }
 })

@@ -20,6 +20,7 @@ router.use('/client', require('./client'))
 router.use('/api/cards', require('./api/cards'))
 router.use('/api/users', require('./api/users'))
 router.use('/api/sessions', require('./api/sessions'))
+router.use('/api/games', require('./api/games'))
 
 /*
   TODO: test this!

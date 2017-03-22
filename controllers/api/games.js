@@ -1,9 +1,8 @@
 var router = require('express').Router()
+var jwt = require('jwt-simple')
+var config = require('../../config')
 
-var games = [
-  {creator: 'David', players: ['David']},
-  {creator: 'Someone', players: []}
-]
+var games = []
 
 // return a collection of games
 router.get('/', function(req, res, next) {
@@ -11,8 +10,12 @@ router.get('/', function(req, res, next) {
 })
 
 router.post('/', function(req, res, next) {
-  games.push({creator: 'Paul', players: ['Paul', 'Santhosh', 'Manasa']})
-  res.status(201).send(token)
+  if (!req.headers['x-auth']) {
+    return res.sendStatus(401)
+  }
+  var auth = jwt.decode(req.headers['x-auth'], config.secret)
+  games.push({creator: auth.username, players: [auth.username]})
+  res.sendStatus(201)
 })
 
 module.exports = router
