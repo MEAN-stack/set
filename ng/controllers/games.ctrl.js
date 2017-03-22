@@ -17,6 +17,8 @@ angular.module('app')
   }
 
   $scope.join = function(game) {
-    console.log("Joining "+game.creator+"'s game")
+    GamesSvc.addPlayer(game).success(function(response) {
+      console.log("Joined "+game.creator+"'s game")
+    })
   }
 })

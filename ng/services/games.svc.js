@@ -8,4 +8,8 @@ angular.module('app')
   this.create = function() {
     return $http.post('/api/games')
   }
+
+  this.addPlayer = function(game) {
+    return $http.post('/api/games/'+game.id+'/players')
+  }
 })
