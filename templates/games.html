@@ -9,7 +9,7 @@
                 <span ng-repeat='player in game.players'><strong>{{player}}</strong>&nbsp;&nbsp;</span>
                 </li>
               </ul>
-              <button type="button" class="btn btn-success" ng-click="join(game)">Join This Game</button>
+              <button type="button" class="btn btn-success" ng-click="join(game)" ng-disabled="userJoinedTo(game)">Join This Game</button>
             </div>
           </uib-accordion>
         </div>

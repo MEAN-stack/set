@@ -32,7 +32,6 @@ angular.module('app')
   }
 
   // send a message to the server
-  // not currently used  
   this.send = function(title, data) {
     var json = JSON.stringify({title: title, data: data})
     connection.send(json)

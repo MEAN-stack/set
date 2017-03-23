@@ -1,6 +1,7 @@
 var router = require('express').Router()
 var jwt = require('jwt-simple')
 var config = require('../../config')
+var ws = require('../../websockets')
 
 var games = []
 
@@ -24,6 +25,7 @@ router.post('/', function(req, res, next) {
     }
   }
   games.push({id: nextId, creator: username, players: [username]})
+  ws.broadcast('newgame', {id: nextId, creator: username, players: [username]})
   nextId++
   res.sendStatus(201)
 })
@@ -50,6 +52,7 @@ router.post('/:id/players', function(req, res, next) {
     }
   }
   game.players.push(username)
+  ws.broadcast('newplayer', {gameid: game.id, player: username})
   res.sendStatus(201)
 })
 
