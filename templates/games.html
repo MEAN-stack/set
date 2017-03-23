@@ -10,6 +10,7 @@
                 </li>
               </ul>
               <button type="button" class="btn btn-success" ng-click="join(game)" ng-disabled="userJoinedTo(game)">Join This Game</button>
+              <button type="button" class="btn btn-success" ng-click="play(game)" ng-show="userCreated(game)">Play</button>
             </div>
           </uib-accordion>
         </div>

@@ -30,6 +30,14 @@ angular.module('app')
     return false
   }
 
+  $scope.play = function(game) {
+    $location.path("/play")
+  }
+
+  $scope.userCreated = function(game) {
+    return $scope.username==game.creator
+  }
+
   $scope.$on('ws:newgame', function(_, game) {
     if (!findGame($scope.games, game.id)) {
       $scope.$apply(function() {
