@@ -52,7 +52,7 @@ router.post('/:id/players', function(req, res, next) {
     }
   }
   game.players.push(username)
-  ws.broadcast('newplayer', {gameid: game.id, player: username})
+  ws.broadcast('newplayer', {gameId: game.id, player: username})
   res.sendStatus(201)
 })
 

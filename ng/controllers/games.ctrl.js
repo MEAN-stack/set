@@ -4,7 +4,6 @@ angular.module('app')
 
   if (/newgame/.test(path)) {
     GamesSvc.create().then(function(response) {
-      console.log("created a game")
       GamesSvc.fetch().success(function(games){
         $scope.games = games
       })
@@ -18,7 +17,7 @@ angular.module('app')
 
   $scope.join = function(game) {
     GamesSvc.addPlayer(game).success(function(response) {
-      game.players.push($scope.username)
+//      game.players.push($scope.username)
     })
   }
 
@@ -32,13 +31,28 @@ angular.module('app')
   }
 
   $scope.$on('ws:newgame', function(_, game) {
-    console.log('New game')
-    console.dir(game)
+    if (!findGame($scope.games, game.id)) {
+      $scope.$apply(function() {
+        $scope.games.push(game)
+      })
+    }
   })
 
   $scope.$on('ws:newplayer', function(_, data) {
-    console.log('New player')
-    console.dir(data)
+    var game = findGame($scope.games, data.gameId)
+    if (game) {
+      $scope.$apply(function() {
+        game.players.push(data.player)
+      })
+    }
   })
 
+  var findGame = function(games, id) {
+    for (var i=0; i<games.length; i++) {
+      if (games[i].id==id) {
+        return games[i]
+      }
+    }
+    return null
+  }
 })
