@@ -35,7 +35,7 @@ angular.module('app')
   }
 
   $scope.userCreated = function(game) {
-    return $scope.username==game.creator
+    return $scope.username==game.owner
   }
 
   $scope.$on('ws:newgame', function(_, game) {
