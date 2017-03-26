@@ -23,6 +23,7 @@ angular.module('app')
     // services and controllers can listen for these events
     connection.onmessage = function(e) {
       var payload = JSON.parse(e.data)
+      console.log('Broadcasting websocket message '+e.data)
       $rootScope.$broadcast('ws:' + payload.title, payload.data)
     }
   }

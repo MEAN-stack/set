@@ -9,6 +9,10 @@ angular.module('app')
     return $http.post('/api/games')
   }
 
+  this.fetchGame = function(gameId) {
+    return $http.get('/api/games/'+gameId)
+  }
+
   this.addPlayer = function(game) {
     return $http.post('/api/games/'+game.id+'/players')
   }

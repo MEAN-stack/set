@@ -19,6 +19,24 @@ router.get('/', function(req, res, next) {
   res.json(games)
 })
 
+// return game details
+router.get('/:id', function(req, res, next) {
+  console.log('get game with id '+req.params.id)
+
+  var game = findGame(req.params.id)
+  if (game) {
+    res.json(game)
+  }
+  else {
+    return res.sendStatus(404)
+  }
+})
+
+// return list of players for a game
+router.get('/:/id/players', function(req, res, next) {
+  res.json(games[req.params.id].players)
+})
+
 router.post('/', function(req, res, next) {
   if (!req.headers['x-auth']) {
     return res.sendStatus(401)
@@ -43,19 +61,13 @@ router.post('/:id/players', function(req, res, next) {
   }
   var auth = jwt.decode(req.headers['x-auth'], config.secret)
   var username = auth.username
-  var gameId = req.params.id
   var i
-
-  for (i=0; i<games.length; i++) {
-    if (games[i].id==gameId) {
-      game=games[i]
-      break
-    }
-  }
-  if (i==games.length) {
+  console.log('finding game '+req.params.id)  
+  var game = findGame(req.params.id)
+  if (!game) {
     return res.sendStatus(404)
   }
-
+  console.dir(game)
   for (i=0; i<game.players.length; i++) {
     if (game.players[i]==username) {
       return res.sendStatus(409)
@@ -75,16 +87,9 @@ router.put('/:id', function(req, res, next) {
   }
   var auth = jwt.decode(req.headers['x-auth'], config.secret)
   var username = auth.username
-  var gameId = req.params.id
-  var i
-
-  for (i=0; i<games.length; i++) {
-    if (games[i].id==gameId) {
-      game=games[i]
-      break
-    }
-  }
-  if (i==games.length) {
+  
+  var game = findGame(req.params.id)
+  if (!game) {
     return res.sendStatus(404)
   }
   if (game.owner != username) {
@@ -93,9 +98,31 @@ router.put('/:id', function(req, res, next) {
   if (req.body.status) {
     game.status = req.body.status
     if (status=="complete") {
-      games.splice(i, 1)
+      deleteGame(req.params.id)
     }
   }
 })
+
+// find game with given id
+//
+function findGame(id) {
+  for (var i=0; i<games.length; i++) {
+    if (games[i].id==id) {
+      return games[i]
+    }
+  }
+  return null
+}
+
+// delete game with given id
+//
+function deleteGame(id) {
+  for (var i=0; i<games.length; i++) {
+    if (games[i].id==gameId) {
+      games.splice(i, 1)
+      return
+    }
+  }
+}
 
 module.exports = router

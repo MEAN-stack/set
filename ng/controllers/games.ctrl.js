@@ -1,23 +1,30 @@
 angular.module('app')
 .controller('GamesCtrl', function($scope, $location, GamesSvc) {
-  var path = $location.path()
+  
+    $scope.games = []
+    var path = $location.path()
 
   if (/newgame/.test(path)) {
     GamesSvc.create().then(function(response) {
-      GamesSvc.fetch().success(function(games){
-        $scope.games = games
-      })
+    },
+    function(error) {
+      console.log('Promise error: '+ error.message)
     })
   }
   else {
-    GamesSvc.fetch().success(function(games){
-      $scope.games = games
+    GamesSvc.fetch().then(function(response){
+      $scope.games = response.data
+    },
+    function(error) {
+      console.log('Promise error: '+ error.message)
     })
   }
 
   $scope.join = function(game) {
-    GamesSvc.addPlayer(game).success(function(response) {
-//      game.players.push($scope.username)
+    GamesSvc.addPlayer(game).then(function(response) {
+    },
+    function(error) {
+      console.log('Promise error: '+ error.message)
     })
   }
 
@@ -31,7 +38,7 @@ angular.module('app')
   }
 
   $scope.play = function(game) {
-    $location.path("/play")
+    $location.path("/play/"+game.id)
   }
 
   $scope.userCreated = function(game) {
@@ -39,6 +46,8 @@ angular.module('app')
   }
 
   $scope.$on('ws:newgame', function(_, game) {
+    console.log('got ws:newgame')
+    console.dir(game)
     if (!findGame($scope.games, game.id)) {
       $scope.$apply(function() {
         $scope.games.push(game)
@@ -47,6 +56,8 @@ angular.module('app')
   })
 
   $scope.$on('ws:newplayer', function(_, data) {
+    console.log('got ws:newplayer')
+    console.dir(data)
     var game = findGame($scope.games, data.gameId)
     if (game) {
       $scope.$apply(function() {
@@ -56,9 +67,11 @@ angular.module('app')
   })
 
   var findGame = function(games, id) {
-    for (var i=0; i<games.length; i++) {
-      if (games[i].id==id) {
-        return games[i]
+    if (games && games.length) {
+      for (var i=0; i<games.length; i++) {
+        if (games[i].id==id) {
+          return games[i]
+        }
       }
     }
     return null

@@ -1,17 +1,39 @@
 angular.module('app')
-.controller('CardsCtrl', function($scope, CardsSvc, $timeout) {
+.controller('CardsCtrl', function($scope, $routeParams, CardsSvc, GamesSvc, $timeout) {
   $scope.deck = []
   $scope.cards = []
   $scope.score = 0
   $scope.set = []
+  $scope.game = null
+  $scope.players = []
+  
+  $scope.gameId = $routeParams.gameid
+  if ($scope.gameId) {
+    GamesSvc.fetchGame($scope.gameId).then(function(response){
+      $scope.game = response.data
+      $scope.myGame = ($scope.game.owner===$scope.username)
+      for (var i=0; i < $scope.game.players.length; i++) {
+        $scope.players.push({
+          username: $scope.game.players[i],
+          score: 0
+        })
+      }
+    },
+    function(error) {
+      console.log('Promise error: '+error.message)
+    })
+  }
 
-  CardsSvc.fetch().success(function(deck){
+  CardsSvc.fetch().then(function(response){
     // fetch the whole deck
-    $scope.deck = deck
+    $scope.deck = response.data
     // deal three rows of four cards
-    $scope.cards.push(deck.splice(0,4))
-    $scope.cards.push(deck.splice(0,4))
-    $scope.cards.push(deck.splice(0,4))
+    $scope.cards.push($scope.deck.splice(0,4))
+    $scope.cards.push($scope.deck.splice(0,4))
+    $scope.cards.push($scope.deck.splice(0,4))
+  },
+  function(error) {
+    console.log('Promise error: '+error.message)
   })
 
   // change the css for the clicked card
@@ -19,14 +41,14 @@ angular.module('app')
     $scope.cards[row][col].selected = !$scope.cards[row][col].selected
     // do we have a set of three?
     var result = checkSet()
-    if (result==1) {
+    if (result===1) {
       // set found
       $timeout(function() {
         clearSelections()
         removeSet()
       }, 500)
     }
-    else if (result==-1) {
+    else if (result===-1) {
       // not a set
       $timeout(function() {
         clearSelections()
@@ -48,13 +70,16 @@ angular.module('app')
     $scope.score = 0
     $scope.set = []
  
-    CardsSvc.fetch().success(function(deck){
+    CardsSvc.fetch().then(function(response){
       // fetch the whole deck
-      $scope.deck = deck
+      $scope.deck = response.data
       // deal three rows of four cards
-      $scope.cards.push(deck.splice(0,4))
-      $scope.cards.push(deck.splice(0,4))
-      $scope.cards.push(deck.splice(0,4))
+      $scope.cards.push($scope.deck.splice(0,4))
+      $scope.cards.push($scope.deck.splice(0,4))
+      $scope.cards.push($scope.deck.splice(0,4))
+    },
+    function(error) {
+      console.log('Promise error: '+error.message)
     })
   }
 
@@ -64,6 +89,9 @@ angular.module('app')
         clearSelections()
       }, 1000)
     }
+  }
+
+  $scope.endGame = function() {
   }
 
   var hint = function() {
@@ -166,7 +194,7 @@ angular.module('app')
           number += card.number
           fill += card.fill
           color += card.color
-          if (count==3) {
+          if (count===3) {
             shape %= 3
             number %= 3
             fill %= 3
@@ -209,7 +237,7 @@ angular.module('app')
       for (row=0; row<3; row++) {
         for (col=$scope.cards[row].length-1; col>=0; col--) {
           card = $scope.cards[row][col]
-          if ((card == $scope.set[0]) || (card == $scope.set[1]) || (card == $scope.set[2])) {
+          if ((card === $scope.set[0]) || (card === $scope.set[1]) || (card === $scope.set[2])) {
             $scope.cards[row].splice(col, 1)
           }
         }
@@ -220,7 +248,7 @@ angular.module('app')
       for (row=0; row<3; row++) {
         for (col=$scope.cards[row].length-1; col>=0; col--) {
           card = $scope.cards[row][col]
-          if ((card == $scope.set[0]) || (card == $scope.set[1]) || (card == $scope.set[2])) {
+          if ((card === $scope.set[0]) || (card === $scope.set[1]) || (card === $scope.set[2])) {
             $scope.cards[row][col] = $scope.deck.splice(0,1)[0]
           }
         }
