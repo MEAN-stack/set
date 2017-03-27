@@ -2,7 +2,8 @@ var router = require('express').Router()
 var jwt = require('jwt-simple')
 var config = require('../../config')
 var ws = require('../../websockets')
-
+var Cards = require('../../cards')
+var shuffle = require('lodash.shuffle')
 
 // var game =  {
 //  id: "1234",
@@ -45,11 +46,15 @@ router.post('/', function(req, res, next) {
   var username = auth.username
   
   for (var i=0; i<games.length; i++) {
-    if (games[i].owner==username) {
+    if (games[i].owner===username) {
       return res.sendStatus(409)
     }
   }
-  games.push({id: nextId, owner: username, status: "waiting", players: [username]})
+  // create a new game
+  // create the deck and shuffle it now
+  var deck = shuffle(new Cards().cards)
+
+  games.push({id: nextId, owner: username, status: "waiting", players: [username], cards: deck})
   ws.broadcast('newgame', {id: nextId, owner: username, status: "waiting", players: [username]})
   nextId++
   res.sendStatus(201)
@@ -69,7 +74,7 @@ router.post('/:id/players', function(req, res, next) {
   }
   console.dir(game)
   for (i=0; i<game.players.length; i++) {
-    if (game.players[i]==username) {
+    if (game.players[i]===username) {
       return res.sendStatus(409)
     }
   }
@@ -92,12 +97,12 @@ router.put('/:id', function(req, res, next) {
   if (!game) {
     return res.sendStatus(404)
   }
-  if (game.owner != username) {
+  if (game.owner !== username) {
     return res.sendStatus(401)
   }
   if (req.body.status) {
     game.status = req.body.status
-    if (status=="complete") {
+    if (status==="complete") {
       deleteGame(req.params.id)
     }
   }
@@ -107,7 +112,7 @@ router.put('/:id', function(req, res, next) {
 //
 function findGame(id) {
   for (var i=0; i<games.length; i++) {
-    if (games[i].id==id) {
+    if (games[i].id===id) {
       return games[i]
     }
   }
@@ -118,9 +123,9 @@ function findGame(id) {
 //
 function deleteGame(id) {
   for (var i=0; i<games.length; i++) {
-    if (games[i].id==gameId) {
+    if (games[i].id===id) {
       games.splice(i, 1)
-      return
+      break
     }
   }
 }

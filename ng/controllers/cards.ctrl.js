@@ -9,8 +9,16 @@ angular.module('app')
   
   $scope.gameId = $routeParams.gameid
   if ($scope.gameId) {
+    // this is a multi-player game
+    // the shuffled deck is inside the game object 
     GamesSvc.fetchGame($scope.gameId).then(function(response){
       $scope.game = response.data
+      $scope.deck = response.data.cards
+      // deal three rows of four cards
+      $scope.cards.push($scope.deck.splice(0,4))
+      $scope.cards.push($scope.deck.splice(0,4))
+      $scope.cards.push($scope.deck.splice(0,4))
+      
       $scope.myGame = ($scope.game.owner===$scope.username)
       for (var i=0; i < $scope.game.players.length; i++) {
         $scope.players.push({
@@ -23,19 +31,22 @@ angular.module('app')
       console.log('Promise error: '+error.message)
     })
   }
-
-  CardsSvc.fetch().then(function(response){
-    // fetch the whole deck
-    $scope.deck = response.data
-    // deal three rows of four cards
-    $scope.cards.push($scope.deck.splice(0,4))
-    $scope.cards.push($scope.deck.splice(0,4))
-    $scope.cards.push($scope.deck.splice(0,4))
-  },
-  function(error) {
-    console.log('Promise error: '+error.message)
-  })
-
+  else {
+    // this is a practise game
+    // fetch the deck via the http api
+    CardsSvc.fetch().then(function(response){
+      // fetch the whole deck
+      $scope.deck = response.data
+      // deal three rows of four cards
+      $scope.cards.push($scope.deck.splice(0,4))
+      $scope.cards.push($scope.deck.splice(0,4))
+      $scope.cards.push($scope.deck.splice(0,4))
+    },
+    function(error) {
+      console.log('Promise error: '+error.message)
+    })
+  }
+  
   // change the css for the clicked card
   $scope.click = function(row, col) {
     $scope.cards[row][col].selected = !$scope.cards[row][col].selected

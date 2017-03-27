@@ -30,7 +30,7 @@ angular.module('app')
 
   $scope.userJoinedTo = function(game) {
     for (var i=0; i<game.players.length; i++) {
-      if ($scope.username==game.players[i]) {
+      if ($scope.username===game.players[i]) {
         return true
       }
     }
@@ -38,11 +38,16 @@ angular.module('app')
   }
 
   $scope.play = function(game) {
-    $location.path("/play/"+game.id)
+    GamesSvc.start().then(function(response) {
+    },
+    function(error) {
+      console.log('Promise error: '+ error.message)
+    })
+//    $location.path("/play/"+game.id)
   }
 
   $scope.userCreated = function(game) {
-    return $scope.username==game.owner
+    return $scope.username===game.owner
   }
 
   $scope.$on('ws:newgame', function(_, game) {
@@ -69,7 +74,7 @@ angular.module('app')
   var findGame = function(games, id) {
     if (games && games.length) {
       for (var i=0; i<games.length; i++) {
-        if (games[i].id==id) {
+        if (games[i].id===id) {
           return games[i]
         }
       }
