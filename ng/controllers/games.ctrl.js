@@ -38,7 +38,7 @@ angular.module('app')
   }
 
   $scope.play = function(game) {
-    GamesSvc.start().then(function(response) {
+    GamesSvc.start(game.id).then(function(response) {
     },
     function(error) {
       console.log('Promise error: '+ error.message)

@@ -17,9 +17,7 @@ angular.module('app')
     return $http.post('/api/games/'+game.id+'/players')
   }
 
-  //TODO: caller to pass gameId
   this.start = function(gameId) {
-    return $http.put('/api/games/'+gameId)
-    // TODO: add body to update game status
+    return $http.put('/api/games/'+gameId, {status: "playing"})
   }
 })

@@ -40,10 +40,10 @@ exports.broadcast = function(title, data) {
   Broadcast a message to all players of the given game
   Each message has a title and a data payload
 */
-exports.broadcastToPlayers = function(game, title, data) {
+exports.broadcastToPlayers = function(gameId, title, data) {
   var json = JSON.stringify({title: title, data: data})
   clients.forEach(function(client) {
-    if (client.game == game) {
+    if (client.game == gameId) {
       client.ws.send(json)
     }
   })
