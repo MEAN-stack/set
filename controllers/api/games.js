@@ -73,7 +73,6 @@ router.post('/:id/players', function(req, res, next) {
     console.log('failed to find game '+req.params.id)
     return res.sendStatus(404)
   }
-  console.dir(game)
   for (i=0; i<game.players.length; i++) {
     if (game.players[i]===username) {
       return res.sendStatus(409)
@@ -104,16 +103,14 @@ router.put('/:id', function(req, res, next) {
   if (req.body.status) {
     game.status = req.body.status
     console.log("changing status of game "+game.id+" to "+game.status)
-    if (status==="playing") {
-//      ws.broadcastToPlayers(game.id, 'gameon', {gameId: game.id})
+    if (game.status==="playing") {
       ws.broadcast('gameon', {gameId: game.id})
     }
-    else if (status==="complete") {
+    else if (game.status==="complete") {
 //      ws.broadcastToPlayers(game.id, 'gameover', {gameId: game.id})
       deleteGame(req.params.id)
     }
   }
-  console.log("sending status 200")
   res.sendStatus(200)
 })
 

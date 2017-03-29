@@ -43,7 +43,6 @@ angular.module('app')
     function(error) {
       console.log('Promise error: '+ error.message)
     })
-//    $location.path("/play/"+game.id)
   }
 
   $scope.userCreated = function(game) {
@@ -71,7 +70,14 @@ angular.module('app')
     }
   })
 
-  var findGame = function(games, id) {
+  $scope.$on('ws:gameon', function(_, data) {
+    console.log('got ws:gameon')
+     $scope.$apply(function() {
+       $location.path("/play/"+data.gameId)
+     })
+  })
+
+ var findGame = function(games, id) {
     if (games && games.length) {
       for (var i=0; i<games.length; i++) {
         if (games[i].id===id) {
