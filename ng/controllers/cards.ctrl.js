@@ -6,11 +6,13 @@ angular.module('app')
   $scope.set = []
   $scope.game = null
   $scope.players = []
+  $scope.practise = false
   
   $scope.gameId = $routeParams.gameid
   if ($scope.gameId) {
     // this is a multi-player game
     // the shuffled deck is inside the game object 
+    $scope.practise = false
     GamesSvc.fetchGame($scope.gameId).then(function(response){
       $scope.game = response.data
       $scope.deck = response.data.cards
@@ -34,6 +36,7 @@ angular.module('app')
   else {
     // this is a practise game
     // fetch the deck via the http api
+    $scope.practise = true
     CardsSvc.fetch().then(function(response){
       // fetch the whole deck
       $scope.deck = response.data
@@ -54,10 +57,22 @@ angular.module('app')
     var result = checkSet()
     if (result===1) {
       // set found
-      $timeout(function() {
-        clearSelections()
-        removeSet()
-      }, 500)
+      if ($scope.practise) {
+        $timeout(function() {
+          clearSelections()
+          removeSet()
+        }, 500)
+      }
+      else {
+        GamesSvc.submitSet($scope.gameId, $scope.set).then(function(response){
+        },
+        function(error) {
+          console.log('Promise error: '+error.message)
+        })
+        $timeout(function() {
+          clearSelections()
+        }, 500)
+      }
     }
     else if (result===-1) {
       // not a set

@@ -20,4 +20,14 @@ angular.module('app')
   this.start = function(gameId) {
     return $http.put('/api/games/'+gameId, {status: "playing"})
   }
+
+  /**
+   * 
+   * @param gameId
+   * @param set
+   * @returns promise
+   */
+  this.submitSet = function(gameId, set) {
+    return $http.put('/api/games/'+gameId, {set: set})
+  }
 })
