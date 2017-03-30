@@ -121,6 +121,9 @@ router.put('/:id', function(req, res, next) {
       ws.broadcast('badset', {gameId: game.id, set: set})
     }
   }
+  if (req.body.deal) {
+    ws.broadcast('deal', {gameId: game.id})
+  }
   res.sendStatus(200)
 })
 

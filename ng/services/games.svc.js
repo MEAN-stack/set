@@ -30,4 +30,8 @@ angular.module('app')
   this.submitSet = function(gameId, set) {
     return $http.put('/api/games/'+gameId, {set: set})
   }
+
+  this.deal = function(gameId) {
+    return $http.put('/api/games/'+gameId, {deal: 3})
+  }
 })

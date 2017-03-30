@@ -83,10 +83,19 @@ angular.module('app')
   }
 
   $scope.deal = function() {
-    if ($scope.deck.length >= 3) {
-      $scope.cards[0].push($scope.deck.splice(0,1)[0])
-      $scope.cards[1].push($scope.deck.splice(0,1)[0])
-      $scope.cards[2].push($scope.deck.splice(0,1)[0])
+    if ($scope.practise) {
+      if ($scope.deck.length >= 3) {
+        $scope.cards[0].push($scope.deck.splice(0,1)[0])
+        $scope.cards[1].push($scope.deck.splice(0,1)[0])
+        $scope.cards[2].push($scope.deck.splice(0,1)[0])
+      }
+    }
+    else {
+      GamesSvc.deal($scope.gameId).then(function(response){
+      },
+      function(error) {
+        console.log('Promise error: '+error.message)
+      })
     }
   }
 
