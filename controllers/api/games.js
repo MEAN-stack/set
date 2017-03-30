@@ -98,10 +98,16 @@ router.put('/:id', function(req, res, next) {
   if (!game) {
     return res.sendStatus(404)
   }
-
-  if (!_.contains(game.players, username)) {
+  console.log("1")
+try {
+  if (!_.includes(game.players, username)) {
     return res.sendStatus(401)
   }
+}
+catch (ex) {
+  console.log(ex.message)
+}
+  console.log("2")
   if (req.body.status) {
     game.status = req.body.status
     console.log("changing status of game "+game.id+" to "+game.status)
@@ -113,18 +119,26 @@ router.put('/:id', function(req, res, next) {
       deleteGame(req.params.id)
     }
   }
+  console.log("3")
   if (req.body.set) {
+    console.log("checking set in game "+game.id)
     if (checkSet(req.body.set)) {
-      ws.broadcast('goodset', {gameId: game.id, set: set})
+      console.log("It's a set")
+      ws.broadcast('goodset', {gameId: game.id, set: req.body.set})
     }
     else {
-      ws.broadcast('badset', {gameId: game.id, set: set})
+      console.log("Not a set")
+      ws.broadcast('badset', {gameId: game.id, set: req.body.set})
     }
   }
+  console.log("4")
   if (req.body.deal) {
+    console.log("deal")
     ws.broadcast('deal', {gameId: game.id})
   }
+  console.log("5")
   res.sendStatus(200)
+  console.log("6")
 })
 
 /**
@@ -135,21 +149,28 @@ var checkSet = function(set) {
   var number = 0
   var fill = 0
   var color = 0
-
+try {
+console.log("a")
   if (set.length != 3) {
     return false
   }
-  for (var i=0; i<3; i++) {
+console.log("b")
+for (var i=0; i<3; i++) {
     var card = set[i]
     shape += card.shape
     number += card.number
     fill += card.fill
     color += card.color
   }
+console.log("c")
   shape %= 3
   number %= 3
   fill %= 3
   color %= 3
+}
+catch(e) {
+  console.log(e.message)
+}
   return (shape===0 && number===0 && fill===0 && color===0)
 }
 
