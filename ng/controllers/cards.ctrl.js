@@ -272,7 +272,7 @@ angular.module('app')
       for (row=0; row<3; row++) {
         for (col=$scope.cards[row].length-1; col>=0; col--) {
           card = $scope.cards[row][col]
-          if ((card === $scope.set[0]) || (card === $scope.set[1]) || (card === $scope.set[2])) {
+          if (equalCard($scope.set[0], card) || equalCard($scope.set[1], card) || equalCard($scope.set[2], card)) {
             $scope.cards[row].splice(col, 1)
           }
         }
@@ -283,12 +283,42 @@ angular.module('app')
       for (row=0; row<3; row++) {
         for (col=$scope.cards[row].length-1; col>=0; col--) {
           card = $scope.cards[row][col]
-          if ((card === $scope.set[0]) || (card === $scope.set[1]) || (card === $scope.set[2])) {
+          if (equalCard($scope.set[0], card) || equalCard($scope.set[1], card) || equalCard($scope.set[2], card)) {
             $scope.cards[row][col] = $scope.deck.splice(0,1)[0]
           }
         }
       }
     }
   }
+
+  var equalCard = function(c1, c2) {
+    return (c1.color===c2.color && c1.shape===c2.shape && c1.number===c2.number && c1.fill===c2.fill)
+  }
+
+
+  // highlight the current set
+  var highlightSet = function() {
+    var row
+    var col
+    var card
+    for (row=0; row<3; row++) {
+      for (col=$scope.cards[row].length-1; col>=0; col--) {
+        card = $scope.cards[row][col]
+        card.selected = ((card == $scope.set[0]) || (card == $scope.set[1]) || (card == $scope.set[2]))
+      }
+    }
+  }
+
+  $scope.$on('ws:goodset', function(_, data) {
+    console.log('got ws:goodset')
+    if ($scope.game.id, data.gameId) {
+      $scope.set = data.set
+      highlightSet()
+      $timeout(function() {
+        clearSelections()
+        removeSet()
+      }, 500)
+    }
+  })
 
 })
