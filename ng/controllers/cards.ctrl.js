@@ -272,7 +272,7 @@ angular.module('app')
       for (row=0; row<3; row++) {
         for (col=$scope.cards[row].length-1; col>=0; col--) {
           card = $scope.cards[row][col]
-          if (equalCard($scope.set[0], card) || equalCard($scope.set[1], card) || equalCard($scope.set[2], card)) {
+          if (angular.equals($scope.set[0], card) || angular.equals($scope.set[1], card) || angular.equals($scope.set[2], card)) {
             $scope.cards[row].splice(col, 1)
           }
         }
@@ -283,7 +283,7 @@ angular.module('app')
       for (row=0; row<3; row++) {
         for (col=$scope.cards[row].length-1; col>=0; col--) {
           card = $scope.cards[row][col]
-          if (equalCard($scope.set[0], card) || equalCard($scope.set[1], card) || equalCard($scope.set[2], card)) {
+          if (angular.equals($scope.set[0], card) || angular.equals($scope.set[1], card) || angular.equals($scope.set[2], card)) {
             $scope.cards[row][col] = $scope.deck.splice(0,1)[0]
           }
         }
@@ -291,10 +291,9 @@ angular.module('app')
     }
   }
 
-  var equalCard = function(c1, c2) {
-    return (c1.color===c2.color && c1.shape===c2.shape && c1.number===c2.number && c1.fill===c2.fill)
-  }
-
+//  var equalCard = function(c1, c2) {
+//    return (c1.color===c2.color && c1.shape===c2.shape && c1.number===c2.number && c1.fill===c2.fill)
+//  }
 
   // highlight the current set
   var highlightSet = function() {
