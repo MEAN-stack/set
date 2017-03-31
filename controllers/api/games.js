@@ -2,7 +2,7 @@ var router = require('express').Router()
 var jwt = require('jwt-simple')
 var config = require('../../config')
 var ws = require('../../websockets')
-var Cards = require('../../cards')
+var Deck = require('../../deck')
 var shuffle = require('lodash.shuffle')
 var _ = require('lodash')
 
@@ -53,7 +53,7 @@ router.post('/', function(req, res, next) {
   }
   // create a new game
   // create the deck and shuffle it now
-  var deck = shuffle(new Cards().cards)
+  var deck = shuffle(new Deck().cards)
 
   games.push({id: nextId, owner: username, status: "waiting", players: [username], cards: deck})
   ws.broadcast('newgame', {id: nextId, owner: username, status: "waiting", players: [username]})

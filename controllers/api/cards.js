@@ -1,12 +1,11 @@
-var Cards = require('../../cards')
+var Deck = require('../../deck')
 var shuffle = require('lodash.shuffle')
 var router = require('express').Router()
 
 // return a collection of rooms
 router.get('/', function(req, res, next) {
-  var cards = new Cards().cards
-  var shuffledCards = shuffle(cards)
-  res.json(shuffledCards)
+  var deck = new Deck().cards
+  res.json(shuffle(deck))
 })
 
 module.exports = router
