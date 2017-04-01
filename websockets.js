@@ -32,7 +32,6 @@ exports.connect = function(server) {
 exports.broadcast = function(title, data) {
   var json = JSON.stringify({title: title, data: data})
   clients.forEach(function(client) {
-    console.log("broadcasting "+json)
     client.ws.send(json)
   })
 }

@@ -23,8 +23,6 @@ router.get('/', function(req, res, next) {
 
 // return game details
 router.get('/:id', function(req, res, next) {
-  console.log('get game with id '+req.params.id)
-
   var game = findGame(req.params.id)
   if (game) {
     res.json(game)
@@ -55,7 +53,7 @@ router.post('/', function(req, res, next) {
   // create the deck and shuffle it now
   var deck = shuffle(new Deck().cards)
 
-  games.push({id: nextId, owner: username, status: "waiting", players: [username], cards: deck})
+  games.push({id: nextId, owner: username, status: "waiting", players: [username], cards: deck, completedSets: []})
   ws.broadcast('newgame', {id: nextId, owner: username, status: "waiting", players: [username]})
   nextId++
   res.sendStatus(201)
@@ -68,10 +66,8 @@ router.post('/:id/players', function(req, res, next) {
   var auth = jwt.decode(req.headers['x-auth'], config.secret)
   var username = auth.username
   var i
-  console.log('finding game '+req.params.id)  
   var game = findGame(req.params.id)
   if (!game) {
-    console.log('failed to find game '+req.params.id)
     return res.sendStatus(404)
   }
   for (i=0; i<game.players.length; i++) {
@@ -98,48 +94,55 @@ router.put('/:id', function(req, res, next) {
   if (!game) {
     return res.sendStatus(404)
   }
-  console.log("1")
-try {
   if (!_.includes(game.players, username)) {
     return res.sendStatus(401)
   }
-}
-catch (ex) {
-  console.log(ex.message)
-}
-  console.log("2")
   if (req.body.status) {
     game.status = req.body.status
-    console.log("changing status of game "+game.id+" to "+game.status)
     if (game.status==="playing") {
       ws.broadcast('gameon', {gameId: game.id})
     }
     else if (game.status==="complete") {
-//      ws.broadcastToPlayers(game.id, 'gameover', {gameId: game.id})
+      console.log('deleting game')
       deleteGame(req.params.id)
+      ws.broadcast('gameover', {gameId: game.id})
     }
   }
-  console.log("3")
   if (req.body.set) {
-    console.log("checking set in game "+game.id)
-    if (checkSet(req.body.set)) {
-      console.log("It's a set")
-      ws.broadcast('goodset', {gameId: game.id, set: req.body.set})
+    if (!completed(game, req.body.set) && checkSet(req.body.set)) {
+      game.completedSets.push(req.body.set)
+      ws.broadcast('goodset', {gameId: game.id, set: req.body.set, player: username})
     }
     else {
-      console.log("Not a set")
-      ws.broadcast('badset', {gameId: game.id, set: req.body.set})
+      ws.broadcast('badset', {gameId: game.id, set: req.body.set, player: username})
     }
   }
-  console.log("4")
   if (req.body.deal) {
-    console.log("deal")
     ws.broadcast('deal', {gameId: game.id})
   }
-  console.log("5")
   res.sendStatus(200)
-  console.log("6")
 })
+
+var eq = function(c1, c2) {
+  return (c1.color===c2.color && c1.shape===c2.shape && c1.number===c2.number && c1.fill===c2.fill)
+}
+
+/**
+ * Check if a set has already been submitted
+ */
+var completed = function(game, set) {
+  var card = set[0]
+  for (var i=0; i<game.completedSets.length; i++) {
+    for (var j=0; j<game.completedSets[i].length; j++) {
+      if (eq(card, game.completedSets[i][j])) {
+        console.log("set is already complete")
+        return true
+      }
+    }
+  }
+  //todo: check set[1] and set[2]??
+  return false
+}
 
 /**
  * return true if the three cards form a set
@@ -149,28 +152,20 @@ var checkSet = function(set) {
   var number = 0
   var fill = 0
   var color = 0
-try {
-console.log("a")
   if (set.length != 3) {
     return false
   }
-console.log("b")
-for (var i=0; i<3; i++) {
+  for (var i=0; i<3; i++) {
     var card = set[i]
     shape += card.shape
     number += card.number
     fill += card.fill
     color += card.color
   }
-console.log("c")
   shape %= 3
   number %= 3
   fill %= 3
   color %= 3
-}
-catch(e) {
-  console.log(e.message)
-}
   return (shape===0 && number===0 && fill===0 && color===0)
 }
 

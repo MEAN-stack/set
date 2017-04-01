@@ -34,4 +34,8 @@ angular.module('app')
   this.deal = function(gameId) {
     return $http.put('/api/games/'+gameId, {deal: 3})
   }
+
+  this.endGame = function(gameId) {
+    return $http.put('/api/games/'+gameId, {status: "complete"})
+  }
 })

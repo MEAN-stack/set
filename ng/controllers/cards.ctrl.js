@@ -127,8 +127,27 @@ angular.module('app')
   }
 
   $scope.endGame = function() {
+    if (!$scope.practise) {
+      GamesSvc.endGame($scope.gameId).then(function(response){
+      },
+      function(error) {
+        console.log('Promise error: '+error.message)
+      })
+    }
   }
 
+  var checkIfGameComplete = function() {
+    if (hint) {
+      clearSelections()
+    }
+    else {
+      $scope.endGame()
+    }
+  }
+  /**
+   * 
+   * @returns true if a set is found
+   */
   var hint = function() {
     var cards = []
     var row, col
@@ -182,7 +201,7 @@ angular.module('app')
           c3.fill %= 3
         }
         for (k=0; k<len; k++) {
-          if (equals(c3, cards[k])) {
+          if (eq(c3, cards[k])) {
             c1.selected = true
             c2.selected = true
             cards[k].selected = true
@@ -192,22 +211,6 @@ angular.module('app')
       }
     }
     return false
-  }
-
-  var equals = function(card1, card2) {
-    if (card1.shape !== card2.shape) {
-      return false
-    }
-    if (card1.number !== card2.number) {
-      return false
-    }
-    if (card1.color !== card2.color) {
-      return false
-    }
-    if (card1.fill !== card2.fill) {
-      return false
-    }
-    return true
   }
 
   var checkSet = function() {
@@ -307,17 +310,46 @@ angular.module('app')
       }
     }
   }
+  
+  var incrementScore = function(username) {
+    for (var i=0; i<$scope.players.length; i++) {
+      if ($scope.players[i].username === username) {
+        $scope.players[i].score++
+        return
+      }
+    }
+  }
 
   $scope.$on('ws:goodset', function(_, data) {
     console.log('got ws:goodset')
-    if ($scope.game.id, data.gameId) {
+    if ($scope.game.id === data.gameId) {
       $scope.set = data.set
-      highlightSet()
+      $scope.$apply(function() {
+        highlightSet()
+      })
       $timeout(function() {
         clearSelections()
         removeSet()
+        incrementScore(data.player)
+        checkIfGameComplete()
       }, 500)
     }
+  })
+
+  $scope.$on('ws:deal', function(_, data) {
+    console.log('got ws:deal')
+    if (($scope.game.id === data.gameId) && ($scope.deck.length >= 3)) {
+      $scope.$apply(function() {
+        $scope.cards[0].push($scope.deck.splice(0,1)[0])
+        $scope.cards[1].push($scope.deck.splice(0,1)[0])
+        $scope.cards[2].push($scope.deck.splice(0,1)[0])
+        checkIfGameComplete()
+      })
+    }
+  })
+
+  $scope.$on('ws:gameover', function(_, data) {
+    console.log('got ws:gameover')
   })
 
 })
