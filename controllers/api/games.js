@@ -18,6 +18,7 @@ nextId = 1234
 
 // return a collection of games
 router.get('/', function(req, res, next) {
+  console.log("get games")
   res.json(games)
 })
 
@@ -104,7 +105,7 @@ router.put('/:id', function(req, res, next) {
     }
     else if (game.status==="complete") {
       console.log('deleting game')
-      deleteGame(req.params.id)
+      deleteGame(game.id)
       ws.broadcast('gameover', {gameId: game.id})
     }
   }
@@ -183,8 +184,10 @@ function findGame(id) {
 // delete game with given id
 //
 function deleteGame(id) {
+  console.log("deleting game" + id)
   for (var i=0; i<games.length; i++) {
     if (games[i].id===id) {
+      console.log("deleting games[" + i + "]")
       games.splice(i, 1)
       break
     }

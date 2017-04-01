@@ -7,6 +7,7 @@ angular.module('app')
   $scope.game = null
   $scope.players = []
   $scope.practise = false
+  $scope.gameOver = false
   
   $scope.gameId = $routeParams.gameid
   if ($scope.gameId) {
@@ -349,7 +350,10 @@ angular.module('app')
   })
 
   $scope.$on('ws:gameover', function(_, data) {
-    console.log('got ws:gameover')
+    console.log('cards.ctrl got ws:gameover')
+    $scope.$apply(function() {
+      $scope.gameOver = true
+    })
   })
 
 })

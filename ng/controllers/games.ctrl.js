@@ -61,7 +61,6 @@ angular.module('app')
 
   $scope.$on('ws:newplayer', function(_, data) {
     console.log('got ws:newplayer')
-    console.dir(data)
     var game = findGame($scope.games, data.gameId)
     if (game) {
       $scope.$apply(function() {
@@ -77,7 +76,7 @@ angular.module('app')
      })
   })
 
- var findGame = function(games, id) {
+  var findGame = function(games, id) {
     if (games && games.length) {
       for (var i=0; i<games.length; i++) {
         if (games[i].id===id) {
@@ -87,4 +86,26 @@ angular.module('app')
     }
     return null
   }
+  
+  var findGameIndex = function(games, id) {
+    if (games && games.length) {
+      for (var i=0; i<games.length; i++) {
+        if (games[i].id===id) {
+          return i
+        }
+      }
+    }
+    return -1
+  }
+
+  $scope.$on('ws:gameover', function(_, data) {
+    console.log('games.ctrl got ws:gameover')
+    var i = findGameIndex($scope.games, data.gameId)
+    if (i>=0) {
+      $scope.$apply(function() {
+        $scope.games.splice(i, 1)
+      })
+    }
+  })
+
 })
